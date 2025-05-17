@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "elementl",
+    "slug": "elementl",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./resources/image/pebble.png",
+    "splash": {
+      "image": "./resources/image/pebble.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
