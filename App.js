@@ -16,7 +16,7 @@ function PlayScreen({ type, onBack }) {
   }, [soundFile]);
 
   const handlePress = async () => {
-    Vibration.vibrate(100);
+    Vibration.vibrate(50);
     try {
       await playSound();
     } catch (e) {
