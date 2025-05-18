@@ -6,7 +6,7 @@ A calming pebble sound app built with Expo React Native. Tapping anywhere plays 
 
 1. Install [Node.js](https://nodejs.org/) and the Expo CLI:
    ```bash
-   npm install -g expo-cli
+   npm install -g expo-cli@7
    ```
 2. Install dependencies:
    ```bash
