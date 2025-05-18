@@ -67,10 +67,12 @@ function PlayScreen({ type, onBack }) {
         translateY.setValue(Math.min(0, gestureState.dy));
       },
       onPanResponderRelease: (_, gestureState) => {
-        finishGesture(gestureState.dy < -50);
+        const shouldClose = gestureState.vy < 0 || gestureState.dy < -50;
+        finishGesture(shouldClose);
       },
       onPanResponderTerminate: (_, gestureState) => {
-        finishGesture(gestureState.dy < -50);
+        const shouldClose = gestureState.vy < 0 || gestureState.dy < -50;
+        finishGesture(shouldClose);
       },
     })
   ).current;
