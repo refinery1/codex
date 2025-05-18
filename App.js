@@ -64,9 +64,7 @@ function PlayScreen({ type, onBack }) {
       onMoveShouldSetPanResponder: () => true,
       onPanResponderGrant: handlePressIn,
       onPanResponderMove: (_, gestureState) => {
-        if (gestureState.dy < 0) {
-          translateY.setValue(gestureState.dy);
-        }
+        translateY.setValue(Math.min(0, gestureState.dy));
       },
       onPanResponderRelease: (_, gestureState) => {
         finishGesture(gestureState.dy < -50);
