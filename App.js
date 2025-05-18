@@ -7,8 +7,12 @@ import {
   Pressable,
   Vibration,
   PanResponder,
+  Animated,
+  Dimensions,
 } from 'react-native';
 import { Audio } from 'expo-av';
+
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 function PlayScreen({ type, onBack }) {
   const soundFile =
@@ -25,18 +29,10 @@ function PlayScreen({ type, onBack }) {
     await sound.playAsync();
   }, [soundFile]);
 
-  const vibrationTimeout = useRef(null);
-  const startY = useRef(0);
-  const swipedUp = useRef(false);
+  const translateY = useRef(new Animated.Value(0)).current;
 
-  const handlePressIn = async (evt) => {
-    startY.current = evt.nativeEvent.pageY;
-    swipedUp.current = false;
-    Vibration.vibrate([0, 50], true);
-    vibrationTimeout.current = setTimeout(() => {
-      Vibration.cancel();
-      vibrationTimeout.current = null;
-    }, 5000);
+  const handlePressIn = async () => {
+    Vibration.vibrate(1000);
     try {
       await playSound();
     } catch (e) {
@@ -44,15 +40,21 @@ function PlayScreen({ type, onBack }) {
     }
   };
 
-  const handlePressOut = (evt) => {
-    Vibration.cancel();
-    if (vibrationTimeout.current) {
-      clearTimeout(vibrationTimeout.current);
-      vibrationTimeout.current = null;
-    }
-    const endY = evt.nativeEvent.pageY;
-    if (swipedUp.current || startY.current - endY > 50) {
-      onBack();
+  const finishGesture = (shouldClose) => {
+    if (shouldClose) {
+      Animated.timing(translateY, {
+        toValue: -SCREEN_HEIGHT,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(() => {
+        translateY.setValue(0);
+        onBack();
+      });
+    } else {
+      Animated.spring(translateY, {
+        toValue: 0,
+        useNativeDriver: true,
+      }).start();
     }
   };
 
@@ -60,24 +62,31 @@ function PlayScreen({ type, onBack }) {
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: handlePressIn,
       onPanResponderMove: (_, gestureState) => {
-        if (gestureState.dy < -50) {
-          swipedUp.current = true;
+        if (gestureState.dy < 0) {
+          translateY.setValue(gestureState.dy);
         }
       },
-      onPanResponderGrant: handlePressIn,
-      onPanResponderRelease: handlePressOut,
-      onPanResponderTerminate: handlePressOut,
+      onPanResponderRelease: (_, gestureState) => {
+        finishGesture(gestureState.dy < -50);
+      },
+      onPanResponderTerminate: (_, gestureState) => {
+        finishGesture(gestureState.dy < -50);
+      },
     })
   ).current;
 
   return (
-    <View style={styles.container} {...responder.panHandlers}>
+    <Animated.View
+      style={[styles.container, StyleSheet.absoluteFill, { transform: [{ translateY }] }]}
+      {...responder.panHandlers}
+    >
       <Image source={imageFile} style={styles.image} />
       <Pressable style={styles.backButton} onPress={onBack}>
         <Text style={styles.backText}>Back</Text>
       </Pressable>
-    </View>
+    </Animated.View>
   );
 }
 
@@ -111,11 +120,14 @@ function Menu({ onSelect }) {
 export default function App() {
   const [selection, setSelection] = useState(null);
 
-  if (!selection) {
-    return <Menu onSelect={setSelection} />;
-  }
-
-  return <PlayScreen type={selection} onBack={() => setSelection(null)} />;
+  return (
+    <View style={{ flex: 1 }}>
+      <Menu onSelect={setSelection} />
+      {selection && (
+        <PlayScreen type={selection} onBack={() => setSelection(null)} />
+      )}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
