@@ -13,6 +13,7 @@ import {
 import { Audio } from 'expo-av';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
+const CLOSE_DISTANCE = -SCREEN_HEIGHT / 2;
 
 function PlayScreen({ type, onBack }) {
   const soundFile =
@@ -67,11 +68,11 @@ function PlayScreen({ type, onBack }) {
         translateY.setValue(Math.min(0, gestureState.dy));
       },
       onPanResponderRelease: (_, gestureState) => {
-        const shouldClose = gestureState.vy < 0 || gestureState.dy < -50;
+        const shouldClose = gestureState.dy < CLOSE_DISTANCE;
         finishGesture(shouldClose);
       },
       onPanResponderTerminate: (_, gestureState) => {
-        const shouldClose = gestureState.vy < 0 || gestureState.dy < -50;
+        const shouldClose = gestureState.dy < CLOSE_DISTANCE;
         finishGesture(shouldClose);
       },
     })
