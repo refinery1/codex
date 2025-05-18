@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, Image, StyleSheet, Pressable, Vibration } from 'react-native';
+import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { Audio } from 'expo-av';
 
 function PlayScreen({ type, onBack }) {
@@ -16,7 +17,13 @@ function PlayScreen({ type, onBack }) {
   }, [soundFile]);
 
   const handlePress = async () => {
-    Vibration.vibrate(50);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    setTimeout(() => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }, 333);
+    setTimeout(() => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }, 666);
     try {
       await playSound();
     } catch (e) {
