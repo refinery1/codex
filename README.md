@@ -1,8 +1,9 @@
 # elementl
 
-A calming pebble sound app built with Expo React Native. Tapping anywhere plays
-the sound of pebbles and triggers a short vibration. A snow option is also
-provided.
+A calming pebble sound app built with Expo React Native. Touching anywhere on
+the play screen plays a sound and vibrates the device while your finger remains
+on the screen (up to five seconds). Swiping up exits back to the menu. A snow
+option is also provided.
 
 ## Setup
 
