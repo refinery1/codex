@@ -1,22 +1,40 @@
-import React, { useState, useCallback } from 'react';
-import { View, Text, Image, StyleSheet, Pressable, Vibration } from 'react-native';
+import React, { useState, useCallback, useRef } from 'react';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Pressable,
+  Vibration,
+  PanResponder,
+} from 'react-native';
 import { Audio } from 'expo-av';
 
 function PlayScreen({ type, onBack }) {
-  const soundFile = type === 'pebbles'
-    ? require('./resources/sound/pebbles.wav')
-    : require('./resources/sound/snow.wav');
-  const imageFile = type === 'pebbles'
-    ? require('./resources/image/pebble.png')
-    : require('./resources/image/snow.png');
+  const soundFile =
+    type === 'pebbles'
+      ? require('./resources/sound/pebbles.wav')
+      : require('./resources/sound/snow.wav');
+  const imageFile =
+    type === 'pebbles'
+      ? require('./resources/image/pebble.png')
+      : require('./resources/image/snow.png');
 
   const playSound = useCallback(async () => {
     const { sound } = await Audio.Sound.createAsync(soundFile);
     await sound.playAsync();
   }, [soundFile]);
 
-  const handlePress = async () => {
-    Vibration.vibrate(100);
+  const vibrationTimeout = useRef(null);
+  const startY = useRef(0);
+
+  const handlePressIn = async (evt) => {
+    startY.current = evt.nativeEvent.pageY;
+    Vibration.vibrate([0, 50], true);
+    vibrationTimeout.current = setTimeout(() => {
+      Vibration.cancel();
+      vibrationTimeout.current = null;
+    }, 5000);
     try {
       await playSound();
     } catch (e) {
@@ -24,13 +42,34 @@ function PlayScreen({ type, onBack }) {
     }
   };
 
+  const handlePressOut = (evt) => {
+    Vibration.cancel();
+    if (vibrationTimeout.current) {
+      clearTimeout(vibrationTimeout.current);
+      vibrationTimeout.current = null;
+    }
+    const endY = evt.nativeEvent.pageY;
+    if (startY.current - endY > 50) {
+      onBack();
+    }
+  };
+
+  const responder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderGrant: handlePressIn,
+      onPanResponderRelease: handlePressOut,
+      onPanResponderTerminate: handlePressOut,
+    })
+  ).current;
+
   return (
-    <Pressable style={styles.container} onPressIn={handlePress}>
+    <View style={styles.container} {...responder.panHandlers}>
       <Image source={imageFile} style={styles.image} />
       <Pressable style={styles.backButton} onPress={onBack}>
         <Text style={styles.backText}>Back</Text>
       </Pressable>
-    </Pressable>
+    </View>
   );
 }
 
