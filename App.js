@@ -4,8 +4,8 @@ import { Audio } from 'expo-av';
 
 function PlayScreen({ type, onBack }) {
   const soundFile = type === 'pebbles'
-    ? require('./resources/sound/pebbles.mp3')
-    : require('./resources/sound/snow.mp3');
+    ? require('./resources/sound/pebbles.wav')
+    : require('./resources/sound/snow.wav');
   const imageFile = type === 'pebbles'
     ? require('./resources/image/pebble.png')
     : require('./resources/image/snow.png');

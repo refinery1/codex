@@ -21,6 +21,6 @@ provided.
 
 ## Assets
 
-`resources/image/pebble.png` and `resources/sound/pebbles.mp3` are placeholders.
-`resources/image/snow.png` and `resources/sound/snow.mp3` are also placeholders.
+`resources/image/pebble.png` and `resources/sound/pebbles.wav` are simple built-in assets.
+`resources/image/snow.png` and `resources/sound/snow.wav` are also provided as basic examples.
 Replace them with your own images and sound files for the best experience.
