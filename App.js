@@ -44,12 +44,26 @@ function PlayScreen({ type, onBack }) {
 function Menu({ onSelect }) {
   return (
     <View style={styles.menuContainer}>
-      <Pressable style={styles.menuOption} onPress={() => onSelect('pebbles')}>
-        <Text style={styles.menuText}>Pebbles</Text>
-      </Pressable>
-      <Pressable style={styles.menuOption} onPress={() => onSelect('snow')}>
-        <Text style={styles.menuText}>Snow</Text>
-      </Pressable>
+      <View style={styles.menuOptions}>
+        <Pressable
+          style={styles.menuImageWrapper}
+          onPress={() => onSelect('pebbles')}
+        >
+          <Image
+            source={require('./resources/image/pebble.png')}
+            style={styles.menuImage}
+          />
+        </Pressable>
+        <Pressable
+          style={styles.menuImageWrapper}
+          onPress={() => onSelect('snow')}
+        >
+          <Image
+            source={require('./resources/image/snow.png')}
+            style={styles.menuImage}
+          />
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -91,15 +105,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  menuOption: {
-    padding: 20,
-    marginVertical: 10,
-    backgroundColor: '#ccc',
-    borderRadius: 4,
-    width: 200,
-    alignItems: 'center',
+  menuOptions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
   },
-  menuText: {
-    fontSize: 18,
+  menuImageWrapper: {
+    margin: 10,
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  menuImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 4,
   },
 });
