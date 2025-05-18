@@ -25,7 +25,7 @@ function PlayScreen({ type, onBack }) {
   };
 
   return (
-    <Pressable style={styles.container} onPress={handlePress}>
+    <Pressable style={styles.container} onPressIn={handlePress}>
       <Image source={imageFile} style={styles.image} />
       <Pressable style={styles.backButton} onPress={onBack}>
         <Text style={styles.backText}>Back</Text>
