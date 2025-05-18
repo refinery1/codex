@@ -27,9 +27,11 @@ function PlayScreen({ type, onBack }) {
 
   const vibrationTimeout = useRef(null);
   const startY = useRef(0);
+  const swipedUp = useRef(false);
 
   const handlePressIn = async (evt) => {
     startY.current = evt.nativeEvent.pageY;
+    swipedUp.current = false;
     Vibration.vibrate([0, 50], true);
     vibrationTimeout.current = setTimeout(() => {
       Vibration.cancel();
@@ -49,7 +51,7 @@ function PlayScreen({ type, onBack }) {
       vibrationTimeout.current = null;
     }
     const endY = evt.nativeEvent.pageY;
-    if (startY.current - endY > 50) {
+    if (swipedUp.current || startY.current - endY > 50) {
       onBack();
     }
   };
@@ -57,6 +59,12 @@ function PlayScreen({ type, onBack }) {
   const responder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: (_, gestureState) => {
+        if (gestureState.dy < -50) {
+          swipedUp.current = true;
+        }
+      },
       onPanResponderGrant: handlePressIn,
       onPanResponderRelease: handlePressOut,
       onPanResponderTerminate: handlePressOut,
